@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistics & Probability Practice Problems</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f5f3ee;
+    color: #2c2c2a;
+    padding: 2rem 1rem;
+    line-height: 1.6;
+  }
+  .page { max-width: 860px; margin: 0 auto; }
+
+  /* Header */
+  .page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #2c2c2a;
+  }
+  .page-header h1 {
+    font-size: 2rem;
+    letter-spacing: .03em;
+    margin-bottom: .25rem;
+    font-weight: normal;
+  }
+  .page-header .subtitle {
+    font-size: .95rem;
+    color: #5f5e5a;
+    font-style: italic;
+    margin-bottom: 1rem;
+  }
+  .meta-row {
+    display: flex; justify-content: center; gap: 2.5rem;
+    font-size: .85rem; color: #5f5e5a;
+  }
+  .meta-row span { border-bottom: 1px solid #aaa; min-width: 140px; text-align: left; padding-bottom: 2px; }
+
+  /* Score tracker */
+  #score-bar {
+    background: #fff;
+    border: 1px solid #d3d1c7;
+    border-radius: 8px;
+    padding: .7rem 1.2rem;
+    margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 1.5rem;
+    font-size: .88rem;
+  }
+  #score-bar strong { font-size: 1.1rem; }
+  .progress-track { flex: 1; height: 8px; background: #e0ddd5; border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #3B6D11; border-radius: 4px; transition: width .4s; width: 0%; }
+
+  /* Section headers */
+  .section-label {
+    font-size: .75rem;
+    font-weight: bold;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #888780;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid #d3d1c7;
+  }
+
+  /* Problem cards */
+  .problem {
+    background: #fff;
+    border: 1px solid #d3d1c7;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .prob-title {
+    background: #2c2c2a;
+    color: #f5f3ee;
+    padding: .6rem 1rem;
+    font-size: .85rem;
+    font-family: Arial, sans-serif;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .prob-num {
+    background: #f5f3ee;
+    color: #2c2c2a;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem; font-weight: bold; flex-shrink: 0;
+  }
+  .prob-body {
+    display: flex; flex-direction: column;
+  }
+  @media(min-width:620px) {
+    .prob-body { flex-direction: row; }
+  }
+  .visual-panel {
+    padding: 1rem;
+    border-bottom: 1px solid #e8e5de;
+    background: #fafaf8;
+  }
+  @media(min-width:620px) {
+    .visual-panel {
+      border-bottom: none;
+      border-right: 1px solid #e8e5de;
+      width: 300px;
+      flex-shrink: 0;
+    }
+  }
+  .answers-panel { padding: 1rem 1.2rem; flex: 1; }
+  .q-text {
+    font-size: .9rem;
+    color: #444;
+    margin-bottom: .9rem;
+    line-height: 1.65;
+    font-family: Arial, sans-serif;
+  }
+  .choice {
+    display: flex; align-items: flex-start; gap: 9px;
+    font-size: .88rem;
+    font-family: Arial, sans-serif;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    border: 1px solid #e8e5de;
+    background: #fff;
+    transition: background .12s, border-color .12s;
+  }
+  .choice:hover { background: #f5f3ee; border-color: #c8c5be; }
+  .choice input { margin-top: 2px; accent-color: #185FA5; flex-shrink: 0; }
+  .choice.correct-ans { background: #eaf3de; border-color: #3B6D11; }
+  .choice.wrong-ans   { background: #fcebeb; border-color: #A32D2D; }
+
+  .check-btn {
+    margin-top: .7rem;
+    padding: 6px 16px;
+    font-size: .82rem;
+    font-family: Arial, sans-serif;
+    border: 1px solid #888;
+    border-radius: 5px;
+    background: #fff;
+    cursor: pointer;
+    color: #2c2c2a;
+    transition: background .12s;
+  }
+  .check-btn:hover { background: #f0ede6; }
+  .check-btn:disabled { opacity: .5; cursor: default; }
+
+  .feedback {
+    display: none;
+    margin-top: .6rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: .83rem;
+    font-family: Arial, sans-serif;
+    line-height: 1.55;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok  { background: #eaf3de; color: #27500A; border-left: 3px solid #3B6D11; }
+  .feedback.bad { background: #fcebeb; color: #791F1F; border-left: 3px solid #A32D2D; }
+
+  /* Canvas charts */
+  .chart-wrap { position: relative; width: 100%; }
+
+  /* SVG visuals */
+  svg.vis { display: block; overflow: visible; }
+
+  /* Venn labels */
+  .vl { font-family: Arial, sans-serif; }
+
+  /* Answer key section */
+  .answer-key {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #2c2c2a;
+    page-break-before: always;
+  }
+  .answer-key h2 { font-size: 1.3rem; margin-bottom: 1rem; font-weight: normal; }
+  .ak-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: .4rem;
+  }
+  .ak-item {
+    background: #fff; border: 1px solid #d3d1c7;
+    border-radius: 6px; padding: .4rem .7rem;
+    font-size: .83rem; font-family: Arial, sans-serif;
+    display: flex; gap: .4rem;
+  }
+  .ak-num { color: #888; min-width: 22px; }
+  .ak-ans { font-weight: bold; color: #27500A; }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .check-btn, #score-bar, .feedback { display: none !important; }
+    .problem { box-shadow: none; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <h1>Statistics &amp; Probability</h1>
+    <div class="subtitle">Practice Problems — Data Representation, Central Tendency &amp; Probability</div>
+    <div class="meta-row">
+      <span>Name: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <span>Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <span>Score: &nbsp;&nbsp;&nbsp;&nbsp; / 15</span>
+    </div>
+  </div>
+
+  <div id="score-bar">
+    <span>Score: <strong id="score-display">0</strong> / <strong id="total-display">0</strong> answered</span>
+    <div class="progress-track"><div class="progress-fill" id="prog"></div></div>
+    <span id="pct-display" style="min-width:38px;text-align:right;color:#5f5e5a">—</span>
+  </div>
+
+  <!-- ====== SECTION A ====== -->
+  <div class="section-label">Part A — Data Representation</div>
+
+  <!-- Q1 Pictograph -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">1</span> Pictograph — sodas per day</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <svg class="vis" width="270" height="165" viewBox="0 0 270 165">
+          <text style="font-size:11px;fill:#888;font-family:Arial" x="0" y="11">Jamil's Soda Log</text>
+          <!-- Row backgrounds -->
+          <rect x="0" y="16" width="270" height="24" rx="3" fill="#f5f3ee"/>
+          <rect x="0" y="64" width="270" height="24" rx="3" fill="#f5f3ee"/>
+          <rect x="0" y="112" width="270" height="24" rx="3" fill="#f5f3ee"/>
+          <!-- Day labels -->
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a" x="2" y="32">Mon</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a" x="2" y="56">Tue</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a" x="2" y="80">Wed</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a" x="2" y="104">Thu</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a" x="2" y="128">Fri</text>
+          <!-- Soda cans (circles for each soda) -->
+          <!-- Mon: 3 -->
+          <circle cx="46" cy="28" r="8" fill="#E24B4A"/><text style="font-size:8px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central" x="46" y="28">🥤</text>
+          <circle cx="62" cy="28" r="8" fill="#E24B4A"/>
+          <circle cx="78" cy="28" r="8" fill="#E24B4A"/>
+          <!-- Tue: 5 -->
+          <circle cx="46" cy="52" r="8" fill="#E24B4A"/>
+          <circle cx="62" cy="52" r="8" fill="#E24B4A"/>
+          <circle cx="78" cy="52" r="8" fill="#E24B4A"/>
+          <circle cx="94" cy="52" r="8" fill="#E24B4A"/>
+          <circle cx="110" cy="52" r="8" fill="#E24B4A"/>
+          <!-- Wed: 2 -->
+          <circle cx="46" cy="76" r="8" fill="#E24B4A"/>
+          <circle cx="62" cy="76" r="8" fill="#E24B4A"/>
+          <!-- Thu: 1 -->
+          <circle cx="46" cy="100" r="8" fill="#E24B4A"/>
+          <!-- Fri: 3 -->
+          <circle cx="46" cy="124" r="8" fill="#E24B4A"/>
+          <circle cx="62" cy="124" r="8" fill="#E24B4A"/>
+          <circle cx="78" cy="124" r="8" fill="#E24B4A"/>
+          <!-- Key -->
+          <line x1="0" y1="143" x2="270" y2="143" stroke="#d3d1c7" stroke-width="0.8"/>
+          <circle cx="12" cy="155" r="8" fill="#E24B4A"/>
+          <text style="font-size:10px;font-family:Arial;fill:#555" x="26" y="159">= 2 sodas (Key)</text>
+        </svg>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">Using the key (each symbol = 2 sodas), how many total sodas did Jamil drink that week?</div>
+        <label class="choice"><input type="radio" name="q1" value="A"> (A) 22 sodas</label>
+        <label class="choice"><input type="radio" name="q1" value="B"> (B) 28 sodas</label>
+        <label class="choice"><input type="radio" name="q1" value="C"> (C) 14 sodas</label>
+        <label class="choice"><input type="radio" name="q1" value="D"> (D) 24 sodas</label>
+        <button class="check-btn" onclick="check(this,'q1','B')">Check answer</button>
+        <div class="feedback" id="q1-fb"></div>
+        <div class="explain" id="q1-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          Count symbols: Mon(3) + Tue(5) + Wed(2) + Thu(1) + Fri(3) = 14 symbols × 2 = <strong>28 sodas</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 Dot Plot -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">2</span> Dot Plot — hours reading per week</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <svg class="vis" width="270" height="145" viewBox="0 0 270 145">
+          <text style="font-size:10px;fill:#888;font-family:Arial" x="0" y="11">Hours Spent Reading Last Week</text>
+          <!-- Axis -->
+          <line x1="20" y1="118" x2="258" y2="118" stroke="#2c2c2a" stroke-width="1.5"/>
+          <!-- Ticks + labels -->
+          <line x1="60"  y1="115" x2="60"  y2="121" stroke="#2c2c2a" stroke-width="1"/>
+          <line x1="104" y1="115" x2="104" y2="121" stroke="#2c2c2a" stroke-width="1"/>
+          <line x1="148" y1="115" x2="148" y2="121" stroke="#2c2c2a" stroke-width="1"/>
+          <line x1="192" y1="115" x2="192" y2="121" stroke="#2c2c2a" stroke-width="1"/>
+          <text style="font-size:11px;fill:#2c2c2a;font-family:Arial;text-anchor:middle" x="60"  y="133">1</text>
+          <text style="font-size:11px;fill:#2c2c2a;font-family:Arial;text-anchor:middle" x="104" y="133">2</text>
+          <text style="font-size:11px;fill:#2c2c2a;font-family:Arial;text-anchor:middle" x="148" y="133">3</text>
+          <text style="font-size:11px;fill:#2c2c2a;font-family:Arial;text-anchor:middle" x="192" y="133">4</text>
+          <text style="font-size:10px;fill:#888;font-family:Arial;text-anchor:middle" x="140" y="145">Number of Hours</text>
+          <!-- Dots: 1hr=2, 2hr=5, 3hr=3, 4hr=2 -->
+          <circle cx="60"  cy="104" r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="60"  cy="88"  r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="104" cy="104" r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="104" cy="88"  r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="104" cy="72"  r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="104" cy="56"  r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="104" cy="40"  r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="148" cy="104" r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="148" cy="88"  r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="148" cy="72"  r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="192" cy="104" r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+          <circle cx="192" cy="88"  r="7" fill="#185FA5" stroke="white" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">Data: 2, 3, 1, 2, 4, 2, 3, 1, 2, 3, 2, 4. What are the mode and range of this data set?</div>
+        <label class="choice"><input type="radio" name="q2" value="A"> (A) Mode = 2, Range = 3</label>
+        <label class="choice"><input type="radio" name="q2" value="B"> (B) Mode = 3, Range = 3</label>
+        <label class="choice"><input type="radio" name="q2" value="C"> (C) Mode = 2, Range = 4</label>
+        <label class="choice"><input type="radio" name="q2" value="D"> (D) Mode = 1, Range = 3</label>
+        <button class="check-btn" onclick="check(this,'q2','A')">Check answer</button>
+        <div class="feedback" id="q2-fb"></div>
+        <div class="explain" id="q2-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          The tallest stack is at 2 hours (5 dots) → <strong>Mode = 2</strong>. Range = 4 − 1 = <strong>3</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 Bar Chart -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">3</span> Bar Graph — soccer team scores</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <div class="chart-wrap" style="height:165px">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">The bar graph shows points scored by soccer teams on Saturday. How many total points did the <strong>Panthers</strong> and <strong>Rockets</strong> score combined?</div>
+        <label class="choice"><input type="radio" name="q3" value="A"> (A) 11</label>
+        <label class="choice"><input type="radio" name="q3" value="B"> (B) 13</label>
+        <label class="choice"><input type="radio" name="q3" value="C"> (C) 14</label>
+        <label class="choice"><input type="radio" name="q3" value="D"> (D) 17</label>
+        <button class="check-btn" onclick="check(this,'q3','C')">Check answer</button>
+        <div class="feedback" id="q3-fb"></div>
+        <div class="explain" id="q3-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          Panthers = 6 pts, Rockets = 8 pts. 6 + 8 = <strong>14 points</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 Line Graph -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">4</span> Line Graph — Romano's Pizza</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <div class="chart-wrap" style="height:165px">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">Based on the pattern in the line graph, how many pizzas can Romano's Pizza make in <strong>6 hours</strong>?</div>
+        <label class="choice"><input type="radio" name="q4" value="A"> (A) 15</label>
+        <label class="choice"><input type="radio" name="q4" value="B"> (B) 18</label>
+        <label class="choice"><input type="radio" name="q4" value="C"> (C) 20</label>
+        <label class="choice"><input type="radio" name="q4" value="D"> (D) 24</label>
+        <button class="check-btn" onclick="check(this,'q4','B')">Check answer</button>
+        <div class="feedback" id="q4-fb"></div>
+        <div class="explain" id="q4-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          The graph rises 3 pizzas per hour (linear trend). At 6 hours: 3 × 6 = <strong>18 pizzas</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 Pie Chart -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">5</span> Pie Chart — pizza topping preferences</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <div class="chart-wrap" style="height:175px">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">The pie chart shows topping preferences for 60 people. What is the degree measure of the central angle for the <strong>Onion</strong> sector (12 people)?</div>
+        <label class="choice"><input type="radio" name="q5" value="A"> (A) 90°</label>
+        <label class="choice"><input type="radio" name="q5" value="B"> (B) 72°</label>
+        <label class="choice"><input type="radio" name="q5" value="C"> (C) 75°</label>
+        <label class="choice"><input type="radio" name="q5" value="D"> (D) 60°</label>
+        <button class="check-btn" onclick="check(this,'q5','B')">Check answer</button>
+        <div class="feedback" id="q5-fb"></div>
+        <div class="explain" id="q5-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          Onion = 12/60 = 1/5 of total. 1/5 × 360° = <strong>72°</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 Histogram -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">6</span> Histogram — quiz score distribution</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <div class="chart-wrap" style="height:165px">
+          <canvas id="histChart"></canvas>
+        </div>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">The histogram shows the distribution of quiz scores. Which score interval has the <strong>greatest frequency</strong>?</div>
+        <label class="choice"><input type="radio" name="q6" value="A"> (A) 0 – 10</label>
+        <label class="choice"><input type="radio" name="q6" value="B"> (B) 11 – 20</label>
+        <label class="choice"><input type="radio" name="q6" value="C"> (C) 21 – 30</label>
+        <label class="choice"><input type="radio" name="q6" value="D"> (D) 31 – 40</label>
+        <button class="check-btn" onclick="check(this,'q6','C')">Check answer</button>
+        <div class="feedback" id="q6-fb"></div>
+        <div class="explain" id="q6-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          The 21–30 bar is the tallest with frequency <strong>13</strong>. That is the greatest frequency.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q7 Scatter Plot -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">7</span> Scatter Plot — study hours vs. test score</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <div class="chart-wrap" style="height:165px">
+          <canvas id="scatterChart"></canvas>
+        </div>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">The scatter plot shows test scores vs. daily study hours for a group of students. What type of correlation does the data show?</div>
+        <label class="choice"><input type="radio" name="q7" value="A"> (A) No correlation</label>
+        <label class="choice"><input type="radio" name="q7" value="B"> (B) Negative correlation</label>
+        <label class="choice"><input type="radio" name="q7" value="C"> (C) Positive correlation</label>
+        <label class="choice"><input type="radio" name="q7" value="D"> (D) Inverse correlation</label>
+        <button class="check-btn" onclick="check(this,'q7','C')">Check answer</button>
+        <div class="feedback" id="q7-fb"></div>
+        <div class="explain" id="q7-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          As study hours increase, test scores increase — points trend upward left to right. This is <strong>positive correlation</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SECTION B ====== -->
+  <div class="section-label">Part B — Measures of Central Tendency</div>
+
+  <!-- Q8 Mean from horizontal bar -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">8</span> Bar Chart — hurricanes per decade</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <div class="chart-wrap" style="height:200px">
+          <canvas id="hurrChart"></canvas>
+        </div>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">The bar chart shows hurricanes affecting the US by decade. What is the <strong>mean</strong> (average) number of hurricanes per decade?</div>
+        <label class="choice"><input type="radio" name="q8" value="A"> (A) 13</label>
+        <label class="choice"><input type="radio" name="q8" value="B"> (B) 14</label>
+        <label class="choice"><input type="radio" name="q8" value="C"> (C) 15</label>
+        <label class="choice"><input type="radio" name="q8" value="D"> (D) 18</label>
+        <button class="check-btn" onclick="check(this,'q8','C')">Check answer</button>
+        <div class="feedback" id="q8-fb"></div>
+        <div class="explain" id="q8-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          Sum: 18 + 15 + 12 + 17 + 15 + 19 + 10 = 106. Mean = 106 ÷ 7 ≈ <strong>15.1 ≈ 15</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SECTION C ====== -->
+  <div class="section-label">Part C — Probability &amp; Venn Diagrams</div>
+
+  <!-- Q9 Simple probability marble visual -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">9</span> Simple Probability — marble bag</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <svg class="vis" width="270" height="155" viewBox="0 0 270 155">
+          <!-- Jar -->
+          <rect x="25" y="18" width="220" height="110" rx="12" fill="#fafaf8" stroke="#888" stroke-width="1.5"/>
+          <rect x="45" y="10" width="180" height="14" rx="5" fill="#fafaf8" stroke="#888" stroke-width="1.2"/>
+          <!-- Red marbles (9) -->
+          <circle cx="50"  cy="65" r="11" fill="#E24B4A" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="50" y="65">R</text>
+          <circle cx="74"  cy="65" r="11" fill="#E24B4A" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="74" y="65">R</text>
+          <circle cx="98"  cy="65" r="11" fill="#E24B4A" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="98" y="65">R</text>
+          <circle cx="122" cy="65" r="11" fill="#E24B4A" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="122" y="65">R</text>
+          <circle cx="146" cy="65" r="11" fill="#E24B4A" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="146" y="65">R</text>
+          <circle cx="50"  cy="100" r="11" fill="#E24B4A" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="50" y="100">R</text>
+          <circle cx="74"  cy="100" r="11" fill="#E24B4A" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="74" y="100">R</text>
+          <circle cx="98"  cy="100" r="11" fill="#E24B4A" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="98" y="100">R</text>
+          <circle cx="122" cy="100" r="11" fill="#E24B4A" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="122" y="100">R</text>
+          <!-- Blue marbles (2) -->
+          <circle cx="170" cy="65" r="11" fill="#185FA5" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="170" y="65">B</text>
+          <circle cx="194" cy="65" r="11" fill="#185FA5" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="194" y="65">B</text>
+          <!-- Green marbles (5) -->
+          <circle cx="146" cy="100" r="11" fill="#3B6D11" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="146" y="100">G</text>
+          <circle cx="170" cy="100" r="11" fill="#3B6D11" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="170" y="100">G</text>
+          <circle cx="194" cy="100" r="11" fill="#3B6D11" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="194" y="100">G</text>
+          <circle cx="218" cy="65" r="11" fill="#3B6D11" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="218" y="65">G</text>
+          <circle cx="218" cy="100" r="11" fill="#3B6D11" stroke="white" stroke-width="1.5"/><text style="font-size:9px;fill:white;font-family:Arial;text-anchor:middle;dominant-baseline:central;font-weight:bold" x="218" y="100">G</text>
+          <!-- Legend -->
+          <line x1="25" y1="135" x2="245" y2="135" stroke="#d3d1c7" stroke-width="0.8"/>
+          <circle cx="38" cy="147" r="7" fill="#E24B4A"/><text style="font-size:9px;font-family:Arial;fill:#444" x="49" y="151">Red = 9</text>
+          <circle cx="110" cy="147" r="7" fill="#185FA5"/><text style="font-size:9px;font-family:Arial;fill:#444" x="121" y="151">Blue = 2</text>
+          <circle cx="178" cy="147" r="7" fill="#3B6D11"/><text style="font-size:9px;font-family:Arial;fill:#444" x="189" y="151">Green = 5</text>
+        </svg>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">A bag contains 9 red, 2 blue, and 5 green marbles. What is the probability of choosing a <strong>blue</strong> marble at random?</div>
+        <label class="choice"><input type="radio" name="q9" value="A"> (A) 5/16</label>
+        <label class="choice"><input type="radio" name="q9" value="B"> (B) 1/8</label>
+        <label class="choice"><input type="radio" name="q9" value="C"> (C) 9/16</label>
+        <label class="choice"><input type="radio" name="q9" value="D"> (D) 2/11</label>
+        <button class="check-btn" onclick="check(this,'q9','B')">Check answer</button>
+        <div class="feedback" id="q9-fb"></div>
+        <div class="explain" id="q9-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          Total = 9 + 2 + 5 = 16 marbles. P(blue) = 2/16 = <strong>1/8</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q10 Complement rule -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">10</span> Complement Rule — marble bag</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <svg class="vis" width="270" height="150" viewBox="0 0 270 150">
+          <!-- Universe box -->
+          <rect x="5" y="5" width="260" height="130" rx="10" fill="#fafaf8" stroke="#888" stroke-width="1.2"/>
+          <text style="font-size:10px;font-family:Arial;fill:#888" x="10" y="20">Sample Space: 12 marbles total</text>
+          <!-- Blue event circle -->
+          <circle cx="95" cy="78" r="44" fill="#ddeeff" stroke="#185FA5" stroke-width="1.8" opacity="0.9"/>
+          <text style="font-size:11px;font-family:Arial;fill:#0C447C;text-anchor:middle;font-weight:bold" x="95" y="72">Blue</text>
+          <text style="font-size:13px;font-family:Arial;fill:#0C447C;text-anchor:middle;font-weight:bold" x="95" y="90">4/12</text>
+          <!-- NOT blue region -->
+          <text style="font-size:11px;font-family:Arial;fill:#555;text-anchor:middle" x="196" y="70">NOT blue</text>
+          <text style="font-size:13px;font-family:Arial;fill:#333;text-anchor:middle;font-weight:bold" x="196" y="88">8/12</text>
+          <text style="font-size:10px;font-family:Arial;fill:#555;text-anchor:middle" x="196" y="103">= 2/3</text>
+          <!-- Formula at bottom -->
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="10" y="125">P(NOT blue) = 1 − P(blue) = 1 − 4/12 = 8/12 = 2/3</text>
+        </svg>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">A bag has 7 red, 4 blue, and 1 green marble (12 total). What is the probability of choosing a marble that is <strong>NOT blue</strong>?</div>
+        <label class="choice"><input type="radio" name="q10" value="A"> (A) 4/7</label>
+        <label class="choice"><input type="radio" name="q10" value="B"> (B) 1/3</label>
+        <label class="choice"><input type="radio" name="q10" value="C"> (C) 2/3</label>
+        <label class="choice"><input type="radio" name="q10" value="D"> (D) 1/8</label>
+        <button class="check-btn" onclick="check(this,'q10','C')">Check answer</button>
+        <div class="feedback" id="q10-fb"></div>
+        <div class="explain" id="q10-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          P(blue) = 4/12 = 1/3. Complement: P(NOT blue) = 1 − 1/3 = <strong>2/3</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q11 Venn Diagram 2-circle dogs/fences -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">11</span> Venn Diagram — dogs &amp; fenced yards (conditional probability)</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <svg class="vis" width="270" height="165" viewBox="0 0 270 165">
+          <text style="font-size:10px;font-family:Arial;fill:#888" x="5" y="13">Survey of 100 people</text>
+          <!-- Universe -->
+          <rect x="4" y="18" width="262" height="130" rx="8" fill="#fafaf8" stroke="#aaa" stroke-width="1"/>
+          <!-- Dog circle -->
+          <circle cx="100" cy="85" r="50" fill="#ddeeff" stroke="#185FA5" stroke-width="1.8" opacity="0.85"/>
+          <!-- Fence circle -->
+          <circle cx="162" cy="85" r="50" fill="#eaf3de" stroke="#3B6D11" stroke-width="1.8" opacity="0.85"/>
+          <!-- Labels -->
+          <text style="font-size:11px;font-family:Arial;fill:#0C447C;text-anchor:middle;font-weight:bold" x="80" y="50">Dog</text>
+          <text style="font-size:11px;font-family:Arial;fill:#27500A;text-anchor:middle;font-weight:bold" x="184" y="50">Fence</text>
+          <!-- Values in regions -->
+          <text style="font-size:18px;font-family:Arial;fill:#0C447C;text-anchor:middle;font-weight:bold" x="80" y="92">5</text>
+          <text style="font-size:18px;font-family:Arial;fill:#1A6B1A;text-anchor:middle;font-weight:bold" x="131" y="92">15</text>
+          <text style="font-size:18px;font-family:Arial;fill:#27500A;text-anchor:middle;font-weight:bold" x="182" y="92">20</text>
+          <!-- Neither -->
+          <text style="font-size:14px;font-family:Arial;fill:#888;text-anchor:middle" x="242" y="88">60</text>
+          <text style="font-size:9px;font-family:Arial;fill:#888;text-anchor:middle" x="242" y="100">neither</text>
+          <!-- Footer -->
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="5" y="158">Dog only: 5 | Both: 15 | Fence only: 20 | Neither: 60</text>
+        </svg>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">The Venn diagram shows a 100-person survey about dog ownership and fenced yards. Given that a person's yard <strong>IS fenced</strong> (35 people total), what is the probability they also own a dog?</div>
+        <label class="choice"><input type="radio" name="q11" value="A"> (A) 1/5</label>
+        <label class="choice"><input type="radio" name="q11" value="B"> (B) 3/7</label>
+        <label class="choice"><input type="radio" name="q11" value="C"> (C) 3/20</label>
+        <label class="choice"><input type="radio" name="q11" value="D"> (D) 1/4</label>
+        <button class="check-btn" onclick="check(this,'q11','B')">Check answer</button>
+        <div class="feedback" id="q11-fb"></div>
+        <div class="explain" id="q11-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          Fenced people = 15 + 20 = 35. Of those, 15 own a dog. P(dog | fenced) = 15/35 = <strong>3/7</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q12 Venn 2-circle brown hair / glasses -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">12</span> Venn Diagram — brown hair &amp; glasses</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <svg class="vis" width="270" height="165" viewBox="0 0 270 165">
+          <!-- Universe -->
+          <rect x="4" y="5" width="262" height="148" rx="8" fill="#fafaf8" stroke="#aaa" stroke-width="1"/>
+          <!-- Brown hair circle -->
+          <circle cx="105" cy="85" r="52" fill="#fff3dc" stroke="#BA7517" stroke-width="1.8" opacity="0.9"/>
+          <!-- Glasses circle -->
+          <circle cx="165" cy="85" r="52" fill="#f0eeff" stroke="#534AB7" stroke-width="1.8" opacity="0.9"/>
+          <!-- Labels -->
+          <text style="font-size:10px;font-family:Arial;fill:#633806;text-anchor:middle;font-weight:bold" x="82" y="42">Brown hair</text>
+          <text style="font-size:10px;font-family:Arial;fill:#3C3489;text-anchor:middle;font-weight:bold" x="192" y="42">Glasses</text>
+          <!-- Values -->
+          <text style="font-size:22px;font-family:Arial;fill:#854F0B;text-anchor:middle;font-weight:bold" x="84" y="93">6</text>
+          <text style="font-size:22px;font-family:Arial;fill:#534AB7;text-anchor:middle;font-weight:bold" x="135" y="93">4</text>
+          <text style="font-size:22px;font-family:Arial;fill:#3C3489;text-anchor:middle;font-weight:bold" x="186" y="93">5</text>
+          <!-- Neither -->
+          <text style="font-size:14px;font-family:Arial;fill:#888" x="246" y="82">11</text>
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="240" y="94">neither</text>
+          <!-- Footer -->
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="8" y="142">Total = 6 + 4 + 5 + 11 = 26 people</text>
+        </svg>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">The Venn diagram shows data for 26 people. How many people have <strong>brown hair AND glasses</strong>? What fraction of all 26 people is that?</div>
+        <label class="choice"><input type="radio" name="q12" value="A"> (A) 6 people — 6/26 = 3/13</label>
+        <label class="choice"><input type="radio" name="q12" value="B"> (B) 4 people — 4/26 = 2/13</label>
+        <label class="choice"><input type="radio" name="q12" value="C"> (C) 10 people — 10/26 = 5/13</label>
+        <label class="choice"><input type="radio" name="q12" value="D"> (D) 5 people — 5/26</label>
+        <button class="check-btn" onclick="check(this,'q12','B')">Check answer</button>
+        <div class="feedback" id="q12-fb"></div>
+        <div class="explain" id="q12-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          The overlapping center region = <strong>4 people</strong>. Fraction = 4/26 = <strong>2/13</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q13 Three-circle Venn -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">13</span> Three-Circle Venn Diagram — student activities</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <svg class="vis" width="270" height="185" viewBox="0 0 270 185">
+          <!-- Universe -->
+          <rect x="4" y="5" width="262" height="172" rx="8" fill="#fafaf8" stroke="#aaa" stroke-width="1"/>
+          <!-- Sports circle (blue) -->
+          <circle cx="115" cy="72" r="52" fill="#ddeeff" stroke="#185FA5" stroke-width="1.5" opacity="0.75"/>
+          <!-- Music circle (green) -->
+          <circle cx="162" cy="72" r="52" fill="#e5f5e0" stroke="#3B6D11" stroke-width="1.5" opacity="0.75"/>
+          <!-- Art circle (amber) -->
+          <circle cx="138" cy="118" r="52" fill="#fff3dc" stroke="#BA7517" stroke-width="1.5" opacity="0.75"/>
+          <!-- Category labels -->
+          <text style="font-size:10px;font-family:Arial;fill:#0C447C;font-weight:bold" x="62" y="32">Sports</text>
+          <text style="font-size:10px;font-family:Arial;fill:#27500A;font-weight:bold" x="176" y="32">Music</text>
+          <text style="font-size:10px;font-family:Arial;fill:#633806;font-weight:bold" x="206" y="135">Art</text>
+          <!-- Region values -->
+          <text style="font-size:13px;font-family:Arial;fill:#0C447C;text-anchor:middle;font-weight:bold" x="100" y="62">8</text>
+          <text style="font-size:13px;font-family:Arial;fill:#27500A;text-anchor:middle;font-weight:bold" x="178" y="62">6</text>
+          <text style="font-size:13px;font-family:Arial;fill:#633806;text-anchor:middle;font-weight:bold" x="138" y="157">7</text>
+          <text style="font-size:13px;font-family:Arial;fill:#1a5e3a;text-anchor:middle;font-weight:bold" x="140" y="58">5</text>
+          <text style="font-size:13px;font-family:Arial;fill:#704a10;text-anchor:middle;font-weight:bold" x="108" y="108">4</text>
+          <text style="font-size:13px;font-family:Arial;fill:#2d6b44;text-anchor:middle;font-weight:bold" x="166" y="108">3</text>
+          <!-- Center: all three -->
+          <text style="font-size:16px;font-family:Arial;fill:#333;text-anchor:middle;font-weight:bold" x="138" y="88">2</text>
+          <!-- Neither -->
+          <text style="font-size:11px;font-family:Arial;fill:#888" x="10" y="170">9 students: none of the three activities</text>
+        </svg>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">The Venn diagram shows which activities students participate in. How many students are in <strong>all three activities</strong> (Sports AND Music AND Art)?</div>
+        <label class="choice"><input type="radio" name="q13" value="A"> (A) 5</label>
+        <label class="choice"><input type="radio" name="q13" value="B"> (B) 12</label>
+        <label class="choice"><input type="radio" name="q13" value="C"> (C) 2</label>
+        <label class="choice"><input type="radio" name="q13" value="D"> (D) 9</label>
+        <button class="check-btn" onclick="check(this,'q13','C')">Check answer</button>
+        <div class="feedback" id="q13-fb"></div>
+        <div class="explain" id="q13-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          The center region where ALL three circles overlap shows <strong>2</strong>. That is the count for all three activities.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q14 Sample space grid two dice -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">14</span> Independent Events — two dice, sum = 7</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <svg class="vis" width="270" height="175" viewBox="0 0 270 175">
+          <text style="font-size:10px;font-family:Arial;fill:#888" x="0" y="11">Sample space: 2 dice (36 outcomes)</text>
+          <!-- Column headers (Die 1) -->
+          <text style="font-size:9px;font-family:Arial;fill:#888;text-anchor:middle" x="135" y="23">Die 1 →</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="68"  y="36">1</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="90"  y="36">2</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="112" y="36">3</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="134" y="36">4</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="156" y="36">5</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="178" y="36">6</text>
+          <!-- Row headers (Die 2) -->
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="2" y="65">D</text>
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="2" y="75">i</text>
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="2" y="85">e</text>
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="2" y="98">2</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="48" y="54">1</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="48" y="76">2</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="48" y="98">3</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="48" y="120">4</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="48" y="142">5</text>
+          <text style="font-size:11px;font-family:Arial;fill:#2c2c2a;text-anchor:middle" x="48" y="164">6</text>
+          <!-- Grid cells — highlight sum=7 in blue -->
+          <!-- Row 1: (1,6)=7 highlighted -->
+          <rect x="57" y="42" w="22" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="79" y="42" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="101" y="42" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="123" y="42" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="145" y="42" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="167" y="42" width="22" height="18" rx="2" fill="#B5D4F4"/>
+          <!-- Row 2: (2,5)=7 -->
+          <rect x="57"  y="64" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="79"  y="64" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="101" y="64" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="123" y="64" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="145" y="64" width="22" height="18" rx="2" fill="#B5D4F4"/>
+          <rect x="167" y="64" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <!-- Row 3: (3,4)=7 -->
+          <rect x="57"  y="86" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="79"  y="86" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="101" y="86" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="123" y="86" width="22" height="18" rx="2" fill="#B5D4F4"/>
+          <rect x="145" y="86" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="167" y="86" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <!-- Row 4: (4,3)=7 -->
+          <rect x="57"  y="108" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="79"  y="108" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="101" y="108" width="22" height="18" rx="2" fill="#B5D4F4"/>
+          <rect x="123" y="108" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="145" y="108" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="167" y="108" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <!-- Row 5: (5,2)=7 -->
+          <rect x="57"  y="130" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="79"  y="130" width="22" height="18" rx="2" fill="#B5D4F4"/>
+          <rect x="101" y="130" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="123" y="130" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="145" y="130" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="167" y="130" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <!-- Row 6: (6,1)=7 -->
+          <rect x="57"  y="152" width="22" height="18" rx="2" fill="#B5D4F4"/>
+          <rect x="79"  y="152" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="101" y="152" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="123" y="152" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="145" y="152" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <rect x="167" y="152" width="22" height="18" rx="2" fill="#f5f3ee"/>
+          <!-- Sum=7 text in highlighted cells -->
+          <text style="font-size:9px;font-family:Arial;fill:#185FA5;text-anchor:middle;font-weight:bold" x="178" y="55">7</text>
+          <text style="font-size:9px;font-family:Arial;fill:#185FA5;text-anchor:middle;font-weight:bold" x="156" y="77">7</text>
+          <text style="font-size:9px;font-family:Arial;fill:#185FA5;text-anchor:middle;font-weight:bold" x="134" y="99">7</text>
+          <text style="font-size:9px;font-family:Arial;fill:#185FA5;text-anchor:middle;font-weight:bold" x="112" y="121">7</text>
+          <text style="font-size:9px;font-family:Arial;fill:#185FA5;text-anchor:middle;font-weight:bold" x="90"  y="143">7</text>
+          <text style="font-size:9px;font-family:Arial;fill:#185FA5;text-anchor:middle;font-weight:bold" x="68"  y="165">7</text>
+          <!-- Note -->
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="200" y="95">6 blue cells</text>
+          <text style="font-size:9px;font-family:Arial;fill:#888" x="200" y="107">= sum of 7</text>
+        </svg>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">Two fair six-sided dice are rolled. The sample space grid shows all 36 outcomes. The blue cells show outcomes where the sum equals 7. What is P(sum = 7)?</div>
+        <label class="choice"><input type="radio" name="q14" value="A"> (A) 1/12</label>
+        <label class="choice"><input type="radio" name="q14" value="B"> (B) 7/36</label>
+        <label class="choice"><input type="radio" name="q14" value="C"> (C) 1/6</label>
+        <label class="choice"><input type="radio" name="q14" value="D"> (D) 1/9</label>
+        <button class="check-btn" onclick="check(this,'q14','C')">Check answer</button>
+        <div class="feedback" id="q14-fb"></div>
+        <div class="explain" id="q14-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          6 outcomes sum to 7 out of 36 total. P = 6/36 = <strong>1/6</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q15 Dependent events -->
+  <div class="problem">
+    <div class="prob-title"><span class="prob-num">15</span> Dependent Events — cards without replacement</div>
+    <div class="prob-body">
+      <div class="visual-panel">
+        <svg class="vis" width="270" height="160" viewBox="0 0 270 160">
+          <!-- Deck box -->
+          <rect x="10" y="15" width="55" height="75" rx="5" fill="#fef9ec" stroke="#BA7517" stroke-width="1.5"/>
+          <text style="font-size:9px;font-family:Arial;fill:#633806;text-anchor:middle" x="37" y="50">52</text>
+          <text style="font-size:9px;font-family:Arial;fill:#633806;text-anchor:middle" x="37" y="62">cards</text>
+          <text style="font-size:8px;font-family:Arial;fill:#888;text-anchor:middle" x="37" y="80">deck</text>
+          <!-- Arrow 1 -->
+          <line x1="65" y1="52" x2="100" y2="52" stroke="#888" stroke-width="1.2" marker-end="url(#marr)"/>
+          <text style="font-size:8px;font-family:Arial;fill:#888;text-anchor:middle" x="83" y="46">draw 1</text>
+          <!-- Box 1 drawn -->
+          <rect x="102" y="15" width="70" height="75" rx="5" fill="#ddeeff" stroke="#185FA5" stroke-width="1.5"/>
+          <text style="font-size:9px;font-family:Arial;fill:#0C447C;text-anchor:middle;font-weight:bold" x="137" y="42">Face card</text>
+          <text style="font-size:9px;font-family:Arial;fill:#0C447C;text-anchor:middle" x="137" y="55">(J, Q, or K)</text>
+          <text style="font-size:9px;font-family:Arial;fill:#185FA5;text-anchor:middle" x="137" y="70">12/52</text>
+          <text style="font-size:9px;font-family:Arial;fill:#185FA5;text-anchor:middle" x="137" y="82">= 3/13</text>
+          <!-- Arrow 2 -->
+          <line x1="172" y1="52" x2="195" y2="52" stroke="#888" stroke-width="1.2" marker-end="url(#marr)"/>
+          <text style="font-size:7px;font-family:Arial;fill:#888;text-anchor:middle" x="183" y="44">no</text>
+          <text style="font-size:7px;font-family:Arial;fill:#888;text-anchor:middle" x="183" y="52">replace</text>
+          <text style="font-size:7px;font-family:Arial;fill:#888;text-anchor:middle" x="183" y="60">51 left</text>
+          <!-- Box 2 -->
+          <rect x="196" y="15" width="68" height="75" rx="5" fill="#e5f5e0" stroke="#3B6D11" stroke-width="1.5"/>
+          <text style="font-size:9px;font-family:Arial;fill:#27500A;text-anchor:middle;font-weight:bold" x="230" y="42">Ace</text>
+          <text style="font-size:9px;font-family:Arial;fill:#27500A;text-anchor:middle" x="230" y="55">(4 remain)</text>
+          <text style="font-size:9px;font-family:Arial;fill:#3B6D11;text-anchor:middle" x="230" y="70">4/51</text>
+          <!-- Multiplication formula -->
+          <rect x="10" y="103" width="254" height="48" rx="5" fill="#f5f3ee" stroke="#d3d1c7" stroke-width="1"/>
+          <text style="font-size:10px;font-family:Arial;fill:#555" x="18" y="120">P(face then ace) = P(face) × P(ace | face removed)</text>
+          <text style="font-size:10px;font-family:Arial;fill:#555" x="18" y="134">= 3/13 × 4/51 = 12/663 = 4/221</text>
+          <text style="font-size:10px;font-family:Arial;fill:#0C447C;font-weight:bold" x="18" y="148">Answer: 4/221</text>
+          <defs>
+            <marker id="marr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+              <path d="M2 2L8 5L2 8" fill="none" stroke="#888" stroke-width="1.5"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+      <div class="answers-panel">
+        <div class="q-text">From a standard 52-card deck, a face card (J, Q, or K) is drawn first and set aside. Then a second card is drawn. What is the probability the second card is an <strong>ace</strong>?</div>
+        <label class="choice"><input type="radio" name="q15" value="A"> (A) 4/221</label>
+        <label class="choice"><input type="radio" name="q15" value="B"> (B) 1/52</label>
+        <label class="choice"><input type="radio" name="q15" value="C"> (C) 4/169</label>
+        <label class="choice"><input type="radio" name="q15" value="D"> (D) 1/17</label>
+        <button class="check-btn" onclick="check(this,'q15','A')">Check answer</button>
+        <div class="feedback" id="q15-fb"></div>
+        <div class="explain" id="q15-ex" style="display:none;font-size:.82rem;color:#444;font-family:Arial;margin-top:.5rem">
+          P(face) = 12/52 = 3/13. After removing it, 51 cards remain with 4 aces. P(ace) = 4/51. P(both) = 3/13 × 4/51 = 12/663 = <strong>4/221</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Answer Key -->
+  <div class="answer-key">
+    <h2>Answer Key</h2>
+    <div class="ak-grid">
+      <div class="ak-item"><span class="ak-num">1.</span><span class="ak-ans">B</span> — 28 sodas</div>
+      <div class="ak-item"><span class="ak-num">2.</span><span class="ak-ans">A</span> — Mode=2, Range=3</div>
+      <div class="ak-item"><span class="ak-num">3.</span><span class="ak-ans">C</span> — 14 pts</div>
+      <div class="ak-item"><span class="ak-num">4.</span><span class="ak-ans">B</span> — 18 pizzas</div>
+      <div class="ak-item"><span class="ak-num">5.</span><span class="ak-ans">B</span> — 72°</div>
+      <div class="ak-item"><span class="ak-num">6.</span><span class="ak-ans">C</span> — 21–30</div>
+      <div class="ak-item"><span class="ak-num">7.</span><span class="ak-ans">C</span> — Positive</div>
+      <div class="ak-item"><span class="ak-num">8.</span><span class="ak-ans">C</span> — 15</div>
+      <div class="ak-item"><span class="ak-num">9.</span><span class="ak-ans">B</span> — 1/8</div>
+      <div class="ak-item"><span class="ak-num">10.</span><span class="ak-ans">C</span> — 2/3</div>
+      <div class="ak-item"><span class="ak-num">11.</span><span class="ak-ans">B</span> — 3/7</div>
+      <div class="ak-item"><span class="ak-num">12.</span><span class="ak-ans">B</span> — 2/13</div>
+      <div class="ak-item"><span class="ak-num">13.</span><span class="ak-ans">C</span> — 2</div>
+      <div class="ak-item"><span class="ak-num">14.</span><span class="ak-ans">C</span> — 1/6</div>
+      <div class="ak-item"><span class="ak-num">15.</span><span class="ak-ans">A</span> — 4/221</div>
+    </div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+const ANSWERS = {
+  q1:'B', q2:'A', q3:'C', q4:'B', q5:'B',
+  q6:'C', q7:'C', q8:'C', q9:'B', q10:'C',
+  q11:'B', q12:'B', q13:'C', q14:'C', q15:'A'
+};
+const EXPLAIN = {
+  q1: 'Count symbols: Mon(3)+Tue(5)+Wed(2)+Thu(1)+Fri(3) = 14 symbols × 2 = <strong>28 sodas</strong>.',
+  q2: 'The tallest stack is at 2 hours (5 dots) → <strong>Mode = 2</strong>. Range = 4 − 1 = <strong>3</strong>.',
+  q3: 'Panthers = 6 pts, Rockets = 8 pts. 6 + 8 = <strong>14 points</strong>.',
+  q4: 'The graph rises 3 pizzas/hour. At 6 hours: 3 × 6 = <strong>18 pizzas</strong>.',
+  q5: 'Onion = 12/60 = 1/5. 1/5 × 360° = <strong>72°</strong>.',
+  q6: 'The 21–30 bar is the tallest with frequency <strong>13</strong>.',
+  q7: 'Points trend upward left to right → <strong>positive correlation</strong>.',
+  q8: 'Sum = 18+15+12+17+15+19+10 = 106. Mean = 106 ÷ 7 ≈ <strong>15</strong>.',
+  q9: 'Total = 9+2+5 = 16. P(blue) = 2/16 = <strong>1/8</strong>.',
+  q10: 'P(blue) = 4/12 = 1/3. Complement = 1 − 1/3 = <strong>2/3</strong>.',
+  q11: 'Fenced people = 15+20 = 35. With dog = 15. P = 15/35 = <strong>3/7</strong>.',
+  q12: 'Overlap region = <strong>4 people</strong>. Fraction = 4/26 = <strong>2/13</strong>.',
+  q13: 'Center of all three circles = <strong>2 students</strong>.',
+  q14: '6 outcomes sum to 7 out of 36 total. P = 6/36 = <strong>1/6</strong>.',
+  q15: 'P(face) = 3/13. P(ace|51 left) = 4/51. P = 3/13 × 4/51 = <strong>4/221</strong>.'
+};
+
+let score = 0, answered = 0;
+const done = {};
+
+function check(btn, name, correct) {
+  if (done[name]) return;
+  const sel = document.querySelector(`input[name="${name}"]:checked`);
+  const fb = document.getElementById(`${name}-fb`);
+  const ex = document.getElementById(`${name}-ex`);
+  if (!sel) {
+    fb.textContent = 'Please select an answer first.';
+    fb.className = 'feedback bad show'; return;
+  }
+  const isRight = sel.value === correct;
+  done[name] = true;
+  btn.disabled = true;
+  // Highlight correct/wrong choice
+  document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+    const lbl = r.closest('.choice');
+    if (r.value === correct) lbl.classList.add('correct-ans');
+    else if (r.checked && !isRight) lbl.classList.add('wrong-ans');
+  });
+  fb.innerHTML = (isRight ? '✓ Correct! ' : '✗ Not quite. ') + EXPLAIN[name];
+  fb.className = 'feedback ' + (isRight ? 'ok' : 'bad') + ' show';
+  if (ex) ex.style.display = 'none';
+  if (isRight) score++;
+  answered++;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById('score-display').textContent = score;
+  document.getElementById('total-display').textContent = answered;
+  const pct = answered ? Math.round(score / answered * 100) : 0;
+  document.getElementById('pct-display').textContent = answered ? pct + '%' : '—';
+  document.getElementById('prog').style.width = (score / 15 * 100) + '%';
+}
+
+// Charts
+const tc = '#5f5e5a', gc = 'rgba(0,0,0,.08)';
+const baseOpts = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { ticks: { color: tc, font: { size: 10 } }, grid: { color: gc } },
+    y: { ticks: { color: tc, font: { size: 10 } }, grid: { color: gc } }
+  }
+};
+
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Panthers','Ravens','Shooting Stars','Rockets'],
+    datasets: [{ data: [6,5,9,8],
+      backgroundColor: ['#85B7EB','#9FE1CB','#F0997B','#97C459'],
+      borderColor: ['#185FA5','#0F6E56','#993C1D','#3B6D11'], borderWidth: 1.5 }]
+  },
+  options: { ...baseOpts,
+    scales: { ...baseOpts.scales,
+      x: { ...baseOpts.scales.x, ticks: { color: tc, font: { size: 9 }, maxRotation: 30 } },
+      y: { ...baseOpts.scales.y, min: 0, max: 12, ticks: { color: tc, font: { size: 10 }, stepSize: 2 } } },
+    plugins: { legend: { display: false },
+      title: { display: true, text: 'Points Scored by Team', color: tc, font: { size: 10 } } } }
+});
+
+new Chart(document.getElementById('lineChart'), {
+  type: 'line',
+  data: {
+    labels: ['0h','1h','2h','3h','4h','5h','6h','7h','8h'],
+    datasets: [{ data: [0,3,6,9,12,15,18,21,24],
+      borderColor: '#185FA5', backgroundColor: 'rgba(55,138,221,.1)',
+      pointBackgroundColor: '#185FA5', pointRadius: 4,
+      fill: true, tension: 0 }]
+  },
+  options: { ...baseOpts,
+    scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, min: 0, max: 28 } },
+    plugins: { legend: { display: false },
+      title: { display: true, text: "Romano's Pizza: Pizzas Made vs. Time", color: tc, font: { size: 10 } } } }
+});
+
+new Chart(document.getElementById('pieChart'), {
+  type: 'pie',
+  data: {
+    labels: ['Cheese 15','Mushroom 7','Bacon 7','Sausage 10','Onion 12','Pepperoni 9'],
+    datasets: [{ data: [15,7,7,10,12,9],
+      backgroundColor: ['#85B7EB','#9FE1CB','#F0997B','#FAC775','#AFA9EC','#C0DD97'],
+      borderColor: '#fff', borderWidth: 2 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'right', labels: { color: tc, font: { size: 9 }, boxWidth: 10, padding: 5 } } } }
+});
+
+new Chart(document.getElementById('histChart'), {
+  type: 'bar',
+  data: {
+    labels: ['0–10','11–20','21–30','31–40','41–50'],
+    datasets: [{ data: [5,8,13,9,5],
+      backgroundColor: ['#85B7EB','#85B7EB','#E24B4A','#85B7EB','#85B7EB'],
+      borderColor: ['#185FA5','#185FA5','#A32D2D','#185FA5','#185FA5'],
+      borderWidth: 1.5, barPercentage: 1, categoryPercentage: 1 }]
+  },
+  options: { ...baseOpts,
+    scales: { ...baseOpts.scales,
+      y: { ...baseOpts.scales.y, min: 0, max: 16,
+           title: { display: true, text: 'Frequency', color: tc, font: { size: 9 } } } },
+    plugins: { legend: { display: false },
+      title: { display: true, text: 'Histogram of Quiz Scores', color: tc, font: { size: 10 } } } }
+});
+
+new Chart(document.getElementById('hurrChart'), {
+  type: 'bar', indexAxis: 'y',
+  data: {
+    labels: ['1950s','1960s','1970s','1980s','1990s','2000s','2010s'],
+    datasets: [{ data: [18,15,12,17,15,19,10],
+      backgroundColor: '#F0997B', borderColor: '#993C1D', borderWidth: 1.5 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false },
+      title: { display: true, text: 'Hurricanes Affecting US by Decade', color: tc, font: { size: 10 } } },
+    scales: {
+      x: { min: 0, max: 24, ticks: { color: tc, font: { size: 9 } }, grid: { color: gc } },
+      y: { ticks: { color: tc, font: { size: 10 } }, grid: { display: false } } } }
+});
+
+new Chart(document.getElementById('scatterChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      { label: 'Students', data: [{x:1,y:52},{x:2,y:60},{x:3,y:68},{x:4,y:75},{x:5,y:80},{x:5,y:85},{x:6,y:88},{x:7,y:92},{x:7,y:95}],
+        backgroundColor: '#185FA5', pointRadius: 6 },
+      { label: 'Trend', data: [{x:0,y:45},{x:8,y:100}],
+        type: 'line', borderColor: 'rgba(55,138,221,.3)', borderDash: [4,4], pointRadius: 0, fill: false }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false },
+      title: { display: true, text: 'Test Score vs. Study Hours', color: tc, font: { size: 10 } } },
+    scales: {
+      x: { min: 0, max: 9, title: { display: true, text: 'Study Hours', color: tc, font: { size: 9 } }, ticks: { color: tc, font: { size: 9 } }, grid: { color: gc } },
+      y: { min: 40, max: 105, title: { display: true, text: 'Score', color: tc, font: { size: 9 } }, ticks: { color: tc, font: { size: 9 } }, grid: { color: gc } } } }
+});
+</script>
+</body>
+</html>
